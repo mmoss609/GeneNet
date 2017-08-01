@@ -1,0 +1,94 @@
+#Import Data
+
+library(readxl)
+Galaxy69_DESeq_all_results_29 <- read_excel("~/Downloads/Galaxy69-DESeq_all_results%29.xlsx", 
+    sheet = "Sheet2", na = "empty")
+View(Galaxy69_DESeq_all_results_29)
+
+#Rename to X for simplicity 
+
+x <- Galaxy69_DESeq_all_results_29
+
+#Change All Log2fold_changes to either 1 or 0, saying whether there is a difference or not
+
+y <- ifelse(x$log2FoldChange != 0,1,0)
+
+
+#Turn y into a named vector giving each binary  index the associated gene name
+
+names(y) <- x[1]
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+THIS ONE KINDA SUCKS
+
+x <- read.table('NulliparousRNA.csv',sep=',',row.names=1)
+x <- t(x) 
+
+library('parmigene')
+y <- cov(x)
+
+xy <- cov2cor(y)
+
+mi <- knnmi.all(y)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+THIS ONE DOESN'T GIVE ME REASONABLE FIGURES, BUT IT'S DEFINITELY A START
+knnmi from parmigene doesn't work because there aren't enough replicated (?)
+
+setwd('~/Documents')
+
+library(WGCNA)
+library(parmigene)
+library(biocInstaller)
+library(minet)
+library(graph)
+library(SYNCSA)
+allowWGCNAThreads()
+
+x <- read.table('ImmuneGenesNulliparous_.csv',sep=',',header=TRUE,row.names=1)
+
+x1 <- x[2]
+x2 <- x[3]
+
+x <- cbind(x1,x2)
+x <- t(x)
+
+#2 different Mutual Information estimates, plus one measure of correlation
+
+mi <- build.mim(x)
+minet <- minet(x)
+corr <- cor(x,method = 'spearman')
+
+
+#Different methods of building network
+
+aracMI <- aracne.a(mi)
+aracMINET <- aracne.a(minet)
+
+netMI <- mrnetb(mi)
+netMINET <- mrnetb(minet)
+
+#Plot the network
+
+plot( as(NETWORK,"graphNEL"))
+
+ALL 4 PLOTS ARE WRONG, BUT WE HAVE GOTTEN SOME FORM OF FIGURE
+
+
+Might have something here
+
+corrMINET <- minet(corr)
+maybe <- mrnetb(corrMINET)
+plot( as(maybe,"graphNEL"))
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#If i've done the above procedure on 2 different gene sets, this finds ???? correlation between them 
+
+netCorr <- cancor(net1,net2)
+
+#View 11 or so genes that are important for something by doing this
+
+View(netCorr[1])
+
