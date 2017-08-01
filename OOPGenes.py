@@ -6,6 +6,8 @@ An incredibly inneficient script to create a gene regulatory net from
 RNA-seq data. We'' call this version 1 for now. Who knows if I'll choose to fix it. 
 We'll see if it works/ if Camilla wants me to make it long lasting for future analyses
 
+Made more efficient by adding parallel capabilities if those work
+
 Created on Mon Jul 31 12:32:24 2017
 
 @author: moss
