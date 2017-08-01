@@ -96,14 +96,14 @@ corr = Parallel(n_jobs = num_cores)(delayed(Correlate)(genes[itsI],genes[itsJ]) 
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
     the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
 
-''' forgot to fix this part before starting the parallel implementation. Will fix in the console once it's done, then update here
-for col in row:
-    if col[0] >= 0.9:
-        col[0] = 1
-    elif col[0] <= -0.9:
-        col[0] = 1
-    else:
-        col[0] = 0'''
+for row in range(len(corr)):
+    for col in range(len(corr)):
+        if corr[row][col] >= 0.9:
+            corr[row][col] = 1
+        elif corr[row][col] <= -0.9:
+            corr[row][col] = 1
+        else:
+            corr[row][col] = 0
 
 
 '''Download biopython and use that for the clustering?'''
