@@ -39,31 +39,31 @@ class Gene:
         self.exp5 = exp5
         self.exp6 = exp6
         
-    def Correlate(Gene1,Gene2):
-        '''Function for creating array of replicates for each gene and then finding spearman correlation coeeficient for thoese 2 genes
-        I could 100% make this into 2 functions. One would create the gene arrays and then combine them into a matrix, and then one would do the 
-        correlation calculations. I'll do that later on too'''
-        gene1 = []
-        gene1.append(Gene1.exp1)
-        gene1.append(Gene1.exp2)
-        gene1.append(Gene1.exp3)
-        gene1.append(Gene1.exp4)
-        gene1.append(Gene1.exp5)
-        gene1.append(Gene1.exp6)
-        gene1 = np.transpose(gene1)
-        
-        gene2 = []
-        gene2.append(Gene2.exp1)
-        gene2.append(Gene2.exp2)
-        gene2.append(Gene2.exp3)
-        gene2.append(Gene2.exp4)
-        gene2.append(Gene2.exp5)
-        gene2.append(Gene2.exp6)
-        gene2 = np.transpose(gene2)
-        
-        cor = spt.spearmanr(gene1,gene2)
-        
-        return cor[1]
+def Correlate(Gene1,Gene2):
+    '''Function for creating array of replicates for each gene and then finding spearman correlation coeeficient for thoese 2 genes
+    I could 100% make this into 2 functions. One would create the gene arrays and then combine them into a matrix, and then one would do the 
+    correlation calculations. I'll do that later on too'''
+    gene1 = []
+    gene1.append(Gene1.exp1)
+    gene1.append(Gene1.exp2)
+    gene1.append(Gene1.exp3)
+    gene1.append(Gene1.exp4)
+    gene1.append(Gene1.exp5)
+    gene1.append(Gene1.exp6)
+    gene1 = np.transpose(gene1)
+
+    gene2 = []
+    gene2.append(Gene2.exp1)
+    gene2.append(Gene2.exp2)
+    gene2.append(Gene2.exp3)
+    gene2.append(Gene2.exp4)
+    gene2.append(Gene2.exp5)
+    gene2.append(Gene2.exp6)
+    gene2 = np.transpose(gene2)
+
+    cor = spt.spearmanr(gene1,gene2)
+
+    return cor[1]
 
 #data = pd.read_csv('FullGeneListwReplicates.csv',sep=',',header=0,usecols = [1,2,3,4,5,6])
         
@@ -90,19 +90,19 @@ itsJ = 0
 
 '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
 
-corr = Parallel(n_jobs = num_cores)(delayed(Gene.Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+corr = Parallel(n_jobs = num_cores)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
 
 '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
     the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
 
-    for col in row:
-        if col[0] >= 0.9:
-            col[0] = 1
-        elif col[0] <= -0.9:
-            col[0] = 1
-        else:
-            col[0] = 0
+for col in row:
+    if col[0] >= 0.9:
+        col[0] = 1
+    elif col[0] <= -0.9:
+        col[0] = 1
+    else:
+        col[0] = 0
 
 
 '''Download biopython and use that for the clustering?'''
