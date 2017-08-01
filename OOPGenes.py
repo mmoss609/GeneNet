@@ -50,7 +50,7 @@ class Gene:
         gene2 = []
         gene2.append(Gene2.exp1)
         gene2.append(Gene2.exp2)
-r        gene2.append(Gene2.exp3)
+        gene2.append(Gene2.exp3)
         gene2.append(Gene2.exp4)
         gene2.append(Gene2.exp5)
         gene2.append(Gene2.exp6)
@@ -86,7 +86,7 @@ for itsI in range(len(data)-1):
 '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
     the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
-    r
+
     for col in row:
         if col[0] >= 0.9:
             col[0] = 1
