@@ -50,7 +50,7 @@ class Gene:
         gene2 = []
         gene2.append(Gene2.exp1)
         gene2.append(Gene2.exp2)
-        gene2.append(Gene2.exp3)
+r        gene2.append(Gene2.exp3)
         gene2.append(Gene2.exp4)
         gene2.append(Gene2.exp5)
         gene2.append(Gene2.exp6)
@@ -72,16 +72,21 @@ for i in range(1,len(data)):
     #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
     #for now, just indeces'''
 corr = np.zeros((len(data),len(data)))
-for i in range(len(data)-1):
-    for j in range(len(data)-1):
-        corr[i,j]=Gene.Correlate(genes[i],genes[j])
+
+itsI = 0
+itsJ = 0
+for itsI in range(len(data)-1):
+    if np.mod(itsI,50) == 0:
+                print('I: {0}'.format(its))
+    for itsJ in range(len(data)-1):
+        if np.mod(itsJ,50) == 0:
+                print('J: {0}'.format(itsJ))
+        corr[itsI,itsJ]=Gene.Correlate(genes[itsI],genes[itsJ])
 
 '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
     the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
-    
-corrWithThresh = corr
-for row in corrWithThresh:
+    r
     for col in row:
         if col[0] >= 0.9:
             col[0] = 1
