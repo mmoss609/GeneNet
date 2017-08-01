@@ -15,12 +15,15 @@ Created on Mon Jul 31 12:32:24 2017
 '''These are mostly just needed for i/o at start of script'''
 import pandas as pd #For excel. Going to use for gene names. Skipping for now for ease of programming
 import os #For setting working directory
-'''These 3 Are important for functional aspects of code'''
+'''These are important for functional aspects of code'''
 import numpy as np 
 import scipy.stats as spt
 import matplotlib.pyplot as plt
+from joblib import Parallel, delayed
+import multiprocessing
 
 os.chdir('/Users/moss/Documents')
+num_cores = multiprocessing.cpu_count()
 
 '''Creates gene object that for now just has the different experiments/replicates as input parameters, but will also have the name soon'''
 class Gene:
@@ -75,13 +78,17 @@ corr = np.zeros((len(data),len(data)))
 
 itsI = 0
 itsJ = 0
-for itsI in range(len(data)-1):
+'''for itsI in range(len(data)-1):
     if np.mod(itsI,50) == 0:
                 print('I: {0}'.format(its))
     for itsJ in range(len(data)-1):
         if np.mod(itsJ,50) == 0:
                 print('J: {0}'.format(itsJ))
-        corr[itsI,itsJ]=Gene.Correlate(genes[itsI],genes[itsJ])
+        corr[itsI,itsJ]=Gene.Correlate(genes[itsI],genes[itsJ])'''
+
+'''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
+
+corr = Parallel(n_jobs = num_cores)(delayed(Gene.Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
 
 '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
