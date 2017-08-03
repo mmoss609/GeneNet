@@ -90,7 +90,7 @@ itsJ = 0
 
 '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
 
-corr = Parallel(n_jobs = num_cores)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+corr = Parallel(n_jobs = num_cores,backend='threading')(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
 
 '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
