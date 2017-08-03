@@ -40,9 +40,7 @@ class Gene:
             Gene.reps.append(data[j])
         
 def Correlate(Gene1,Gene2):
-    '''Function for creating array of replicates for each gene and then finding spearman correlation coeeficient for thoese 2 genes
-    I could 100% make this into 2 functions. One would create the gene arrays and then combine them into a matrix, and then one would do the 
-    correlation calculations. I'll do that later on too'''
+    '''Function for finding spearman correlation coefficient between 2 gene objects. Used in a parallel loop later'''
 
     cor = spt.spearmanr(gene1,gene2)
 
