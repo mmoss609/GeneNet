@@ -29,37 +29,20 @@ num_cores = multiprocessing.cpu_count()
 
 '''Creates gene object that for now just has the different experiments/replicates as input parameters, but will also have the name soon'''
 class Gene:
-    def __init__(self,exp1,exp2,exp3,exp4,exp5,exp6):
+    def __init__(self,dataFile):
         '''Defines characteristics of each gene object'''
         #self.name = name
-        self.exp1 = exp1
-        self.exp2 = exp2
-        self.exp3 = exp3 
-        self.exp4 = exp4
-        self.exp5 = exp5
-        self.exp6 = exp6
+        self.data = dataFile
+        self.reps = []
+    
+    def geneArrays(self,geneReps):
+        for j in range(1,len(np.transpose(self.data))):
+            Gene.reps.append(data[j])
         
 def Correlate(Gene1,Gene2):
     '''Function for creating array of replicates for each gene and then finding spearman correlation coeeficient for thoese 2 genes
     I could 100% make this into 2 functions. One would create the gene arrays and then combine them into a matrix, and then one would do the 
     correlation calculations. I'll do that later on too'''
-    gene1 = []
-    gene1.append(Gene1.exp1)
-    gene1.append(Gene1.exp2)
-    gene1.append(Gene1.exp3)
-    gene1.append(Gene1.exp4)
-    gene1.append(Gene1.exp5)
-    gene1.append(Gene1.exp6)
-    gene1 = np.transpose(gene1)
-
-    gene2 = []
-    gene2.append(Gene2.exp1)
-    gene2.append(Gene2.exp2)
-    gene2.append(Gene2.exp3)
-    gene2.append(Gene2.exp4)
-    gene2.append(Gene2.exp5)
-    gene2.append(Gene2.exp6)
-    gene2 = np.transpose(gene2)
 
     cor = spt.spearmanr(gene1,gene2)
 
@@ -71,7 +54,8 @@ def Correlate(Gene1,Gene2):
 data = np.genfromtxt('FullGeneListwReplicates.csv',delimiter=',')
 genes = []
 for i in range(1,len(data)):
-    genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
+    genes.append(Gene.geneArrays(data[i]))
+    #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
 
 '''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
     #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
