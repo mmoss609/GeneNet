@@ -46,6 +46,21 @@ def Correlate(Gene1,Gene2):
 
     return cor[1]
 
+def Thresh(corrMatrix,threshHigh,threshLow):
+    '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient threshLow <= p <= threshHigh
+    (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
+    the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
+    threshMatrix = []
+    for row in range(len(corrMatrix)):
+        for col in range(len(corrMatrix)):
+            if corrMatrix[row][col] >= threshHigh:
+                threshMatrix[row][col] = 1
+            elif corrMatrix[row][col] <= ThreshLow:
+                threshMatrix[row][col] = 1
+            else:
+                threshMatrix[row][col] = 0
+    return threshMatrix
+
 #data = pd.read_csv('FullGeneListwReplicates.csv',sep=',',header=0,usecols = [1,2,3,4,5,6])
         
 '''Current main body of program. Imports data and then creates gene objects for each gene in the data set'''
@@ -55,37 +70,20 @@ for i in range(1,len(data)):
     genes.append(Gene.geneArrays(data[i]))
     #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
 
-'''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
+
+    '''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
     #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
     #for now, just indeces'''
-corr = np.zeros((len(data),len(data)))
 
 itsI = 0
 itsJ = 0
-'''for itsI in range(len(data)-1):
-    if np.mod(itsI,50) == 0:
-                print('I: {0}'.format(its))
-    for itsJ in range(len(data)-1):
-        if np.mod(itsJ,50) == 0:
-                print('J: {0}'.format(itsJ))
-        corr[itsI,itsJ]=Gene.Correlate(genes[itsI],genes[itsJ])'''
 
 '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
-
+corr = np.zeros((len(data),len(data)))
 corr = Parallel(n_jobs = num_cores,backend='threading')(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+corrCopy = corr
+corrCopy = Thresh(corr,0.9,-0.9)
 
-'''Copy that correlation matrix and then set a threshold that removes all connections with coefficient -0.9 <= p <= 0.9
-    (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
-    the corr coefficients if i want to save memory and don't care about the actual connection strength above or below the thresholds'''
-
-for row in range(len(corr)):
-    for col in range(len(corr)):
-        if corr[row][col] >= 0.9:
-            corr[row][col] = 1
-        elif corr[row][col] <= -0.9:
-            corr[row][col] = 1
-        else:
-            corr[row][col] = 0
 
 
 '''Download biopython and use that for the clustering?'''
