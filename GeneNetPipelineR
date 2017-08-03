@@ -92,3 +92,8 @@ netCorr <- cancor(net1,net2)
 
 View(netCorr[1])
 
+$Thresh
+
+netThresh = net
+for( i in 1:length(net)){
+if(netThresh[i] > 0.9) {netThresh[i] = 1} else if (netThresh[i] < -0.9) {netThresh[i] = 1} else netThresh[i] = 0}
