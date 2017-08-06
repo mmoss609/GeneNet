@@ -47,6 +47,13 @@ def Correlate(Gene1,Gene2):
 
     return cor[1]
 
+def MI_calc(Gene1,Gene2):
+    '''Function for calculating Mutual Information between genes. Adapted from https://stackoverflow.com/questions/20491028/optimal-way-to-compute-pairwise-mutual-information-using-numpy'''
+    MI_genes = np.histogram2d(Gene1, Gene2, bins='auto')[0]
+    g_stat, p_value, dof, expected = chi2_contingency(MI_genes, lambda_="log-likelihood")
+    mi = 0.5 * g / MI_genes.sum()
+    return mi
+
 def Thresh(corrMatrix,threshHigh,threshLow):
     '''Copy that correlation matrix and then set a threshold that removes all connections with coefficient threshLow <= p <= threshHigh
     (considers them as noise) to aid in viewing connectivity after. I can definitely build this into the for loop that calculates
@@ -81,9 +88,10 @@ if __name__ == '__main__':
     itsI = 0
     itsJ = 0
 
-    '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
+    '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function. Use commenting to specify which measure is preferable'''
     corr = np.zeros((len(data),len(data)))
     corr = Parallel(n_jobs = num_cores,backend='threading',verbose=2)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+    #corr = Parallel(n_jobs=num_cores,backend='threading',verbose=2)(delayed(MI_calc)(genes[itsI],gemes[itsJ] for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
     corrCopy = corr
     corrCopy = Thresh(corr,0.9,-0.9)
 
