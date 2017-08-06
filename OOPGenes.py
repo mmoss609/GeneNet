@@ -90,8 +90,8 @@ if __name__ == '__main__':
 
     '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function. Use commenting to specify which measure is preferable'''
     corr = np.zeros((len(data),len(data)))
-    corr = Parallel(n_jobs = num_cores,backend='threading',verbose=2)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
-    #corr = Parallel(n_jobs=num_cores,backend='threading',verbose=2)(delayed(MI_calc)(genes[itsI],genes[itsJ] for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+    corr = Parallel(n_jobs = num_cores,backend='multiprocessing',verbose=2)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+    #corr = Parallel(n_jobs=num_cores,backend='multiprocessing',verbose=2)(delayed(MI_calc)(genes[itsI],genes[itsJ] for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
     corrCopy = corr
     corrCopy = Thresh(corr,0.9,-0.9)
 
