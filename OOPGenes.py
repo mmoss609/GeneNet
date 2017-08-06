@@ -36,8 +36,9 @@ class Gene:
         self.reps = []
     
     def geneArrays(self,geneReps):
-        for j in range(1,len(np.transpose(self.data))):
-            Gene.reps.append(data[j])
+        reps = []
+        for j in range(1,len(np.transpose(geneReps))):
+            Gene.reps.append(geneReps[j])
         
 def Correlate(Gene1,Gene2):
     '''Function for finding spearman correlation coefficient between 2 gene objects. Used in a parallel loop later'''
@@ -63,26 +64,28 @@ def Thresh(corrMatrix,threshHigh,threshLow):
 
 #data = pd.read_csv('FullGeneListwReplicates.csv',sep=',',header=0,usecols = [1,2,3,4,5,6])
         
+if __name__ == '__main__':
 '''Current main body of program. Imports data and then creates gene objects for each gene in the data set'''
-data = np.genfromtxt('FullGeneListwReplicates.csv',delimiter=',')
-genes = []
-for i in range(1,len(data)):
-    genes.append(Gene.geneArrays(data[i]))
-    #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
+    multiprocessing.set_start_method('forkserver',force=True)
+    data = np.genfromtxt('FullGeneListwReplicates.csv',delimiter=',')
+    genes = []
+    for i in range(1,len(data)):
+        genes.append(Gene.geneArrays(data[i]))
+        #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
 
 
-    '''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
-    #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
-    #for now, just indeces'''
+        '''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
+        #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
+        #for now, just indeces'''
 
-itsI = 0
-itsJ = 0
+    itsI = 0
+    itsJ = 0
 
-'''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
-corr = np.zeros((len(data),len(data)))
-corr = Parallel(n_jobs = num_cores,backend='threading')(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
-corrCopy = corr
-corrCopy = Thresh(corr,0.9,-0.9)
+    '''Performs the computations but runs it in parallel. Hopefully substantially faster than original function'''
+    corr = np.zeros((len(data),len(data)))
+    corr = Parallel(n_jobs = num_cores,backend='threading',verbose=2)(delayed(Correlate)(genes[itsI],genes[itsJ]) for itsI in range(len(data)-1) for itsJ in range(len(data)-1))
+    corrCopy = corr
+    corrCopy = Thresh(corr,0.9,-0.9)
 
 
 
