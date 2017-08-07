@@ -75,9 +75,12 @@ if __name__ == '__main__':
 '''Current main body of program. Imports data and then creates gene objects for each gene in the data set'''
     multiprocessing.set_start_method('forkserver',force=True)
     data = np.genfromtxt('FullGeneListwReplicates.csv',delimiter=',')
-    genes = []
-    for i in range(1,len(data)):
-        genes.append(Gene.geneArrays(data[i]))
+    genes = np.zeros((len(data)-1,len(data[1])-1))
+    result = []
+    for i in range(1,len(data)-1):
+        result = Gene.geneArrays(data[i])
+        for j in range(len(result)):
+            genes[i,j] = result[j]
         #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
 
 
