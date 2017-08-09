@@ -63,7 +63,7 @@ def Thresh(corrMatrix,threshHigh,threshLow):
         for col in range(len(corrMatrix)):
             if corrMatrix[row][col] >= threshHigh:
                 threshMatrix[row][col] = 1
-            elif corrMatrix[row][col] <= ThreshLow:
+            elif corrMatrix[row][col] <= threshLow:
                 threshMatrix[row][col] = 1
             else:
                 threshMatrix[row][col] = 0
@@ -84,9 +84,9 @@ if __name__ == '__main__':
         #genes.append(Gene(data[i,1],data[i,2],data[i,3],data[i,4],data[i,5],data[i,6]))
 
 
-        '''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
-        #then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
-        #for now, just indeces'''
+'''Runs correlation function for all gene pairs in dataset. This is the computationally intensive part, as it first allocates the space for the large correlation matrix,
+then calculates the gene-gene correlation, and then puts those in the proper space in the correlation matrix. Later, I'll be able to associate this with gene names
+for now, just indeces'''
 
     itsI = 0
     itsJ = 0
