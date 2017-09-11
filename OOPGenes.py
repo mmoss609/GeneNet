@@ -69,6 +69,22 @@ def Thresh(corrMatrix,threshHigh,threshLow):
                 threshMatrix[row][col] = 0
     return threshMatrix
 
+def adaptedMRNET(MI_matrix):
+    '''Adapted from Meyer, et al. 2007 paper on calculating regulatory networks using MI. I'm assuming that a correlation matrix 
+    is sufficient as well, until I get the MI function to work with multithreading''''
+    
+    s = MI_matrix
+    r_j_minTerms = []
+    for i in range(len(s[:,0])):
+        r_j_minTerms.append(min(s[i]))
+    r_j = sum(r_j_minTerms) / s.shape[1]
+    xj_MRMR = []
+    for i in range(s.shape[0]):
+        for j in range(s.shape[1]):
+            xj_MRMR[i,j] = s[i,j] - r_j
+    
+    
+
 #data = pd.read_csv('FullGeneListwReplicates.csv',sep=',',header=0,usecols = [1,2,3,4,5,6])
         
 if __name__ == '__main__':
